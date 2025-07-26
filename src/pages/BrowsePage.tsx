@@ -1,0 +1,184 @@
+import MovieCard from "@/components/MovieCard";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+// import { getGenresFromMood } from "@/services/openaiService";
+import { auth } from "@/auth/firebase";
+import { API_OPTIONS, searchMoviesByKeywords } from "@/services/tmdbService";
+
+export default function BrowsePage() {
+  const navigate = useNavigate();
+
+  const [mood, setMood] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchedMovies, setSearchedMovies] = useState<any[]>([]);
+  const [popularMovies, setPopularMovies] = useState<any[]>([]);
+  const [nowPlayingMovies, setNowPlayingMovies] = useState<any[]>([]);
+  const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
+
+  const getNowPlayingMovies = async () => {
+    console.log("Fetching now playing movies...");
+    try {
+      const results = await fetch(
+        "https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1",
+        API_OPTIONS
+      )
+        .then((res) => res.json())
+        .then((res) => res.results)
+        .catch((err) => console.error(err));
+      setNowPlayingMovies(results);
+      console.log("Now Playing Movies:", results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  const getPopularMovies = async () => {
+    console.log("Fetching popular movies...");
+    try {
+      const results = await fetch(
+        "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+        API_OPTIONS
+      )
+        .then((res) => res.json())
+        .then((res) => res.results)
+        .catch((err) => console.error(err));
+      setPopularMovies(results);
+      console.log("Popular Movies:", results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  const getTopRatedMovies = async () => {
+    console.log("Fetching top rated movies...");
+    try {
+      const results = await fetch(
+        "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+        API_OPTIONS
+      )
+        .then((res) => res.json())
+        .then((res) => res.results)
+        .catch((err) => console.error(err));
+      setTopRatedMovies(results);
+      console.log("Top Rated Movies:", results);
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+    }
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      //   const genres = await getGenresFromMood(mood);
+      const genres = [
+        "Dilwale Dulhania Le Jayenge",
+        "Kabhi Khushi Kabhie Gham",
+        "Kabir Singh",
+      ];
+      console.log("OpenAI returned genres:", genres);
+      const results = await searchMoviesByKeywords(genres);
+
+      setSearchedMovies(results);
+      console.log("Movies:", results);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getNowPlayingMovies();
+    getPopularMovies();
+    getTopRatedMovies();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        navigate("/");
+      }
+    });
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Sign out error:", error);
+      });
+  };
+
+  return (
+    <div className="min-h-screen bg-black text-white p-4">
+      <h1 className="text-3xl font-serif">Welcome to CineMood 🎬</h1>
+      <p className="mt-4">Search by your mood and discover movies!</p>
+      <Button onClick={handleSignOut} className="mt-6">
+        Sign Out
+      </Button>
+      <form onSubmit={handleSearch} className="mt-6 flex gap-2">
+        <Input
+          type="text"
+          placeholder="What are you feeling today?"
+          value={mood}
+          onChange={(e) => setMood(e.target.value)}
+          className="flex-1 text-white"
+        />
+        <Button type="submit" disabled={loading}>
+          {loading ? "Searching..." : "Go"}
+        </Button>
+      </form>
+      {searchedMovies.length > 0 && (
+        <>
+          <h2 className="text-2xl font-semibold mt-6 mb-4">Searched Movies</h2>
+          <div className="flex gap-4 overflow-x-auto">
+            {searchedMovies?.map((movie) => (
+              <div key={movie.id} className="flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+      {searchedMovies.length === 0 && (
+        <>
+          <h2 className="text-2xl font-semibold mt-6 mb-4">
+            Now Playing Movies
+          </h2>
+          <div className="flex gap-4 overflow-x-auto">
+            {nowPlayingMovies?.map((movie) => (
+              <div key={movie.id} className="flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+          </div>
+
+          <h2 className="text-2xl font-semibold mt-6 mb-4">Popular Movies</h2>
+          <div className="flex gap-4 overflow-x-auto">
+            {popularMovies?.map((movie) => (
+              <div key={movie.id} className="flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+          </div>
+
+          <h2 className="text-2xl font-semibold mt-6 mb-4">Top Rated Movies</h2>
+          <div className="flex gap-4 overflow-x-auto">
+            {topRatedMovies?.map((movie) => (
+              <div key={movie.id} className="flex-shrink-0">
+                <MovieCard movie={movie} />
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
