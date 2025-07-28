@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/authStore";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { Label } from "@/components/ui/label";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
 } from "firebase/auth";
 import { auth } from "@/auth/firebase";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ const LoginForm = () => {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           console.log("Signed up:", userCredential.user);
+          setIsLoggedIn(true);
         })
         .catch((error) => {
           console.error("Sign up error:", error);
@@ -31,6 +33,7 @@ const LoginForm = () => {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           console.log("Signed in:", userCredential.user);
+          setIsLoggedIn(true);
           navigate("/browse"); // Redirect to browse page after sign in
         })
         .catch((error) => {
@@ -39,18 +42,8 @@ const LoginForm = () => {
     }
   };
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("Signed out");
-      })
-      .catch((error) => {
-        console.error("Sign out error:", error);
-      });
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-900 text-white px-4">
+    <div className="relative z-20 min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-900 text-white px-4">
       <Card className="w-full max-w-md bg-zinc-950 border-zinc-800 shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-3xl font-bold text-white">
@@ -60,7 +53,7 @@ const LoginForm = () => {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label>Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -72,7 +65,7 @@ const LoginForm = () => {
               />
             </div>
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label>Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -97,14 +90,6 @@ const LoginForm = () => {
               </span>
             </p>
           </form>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={handleSignOut}
-            className="w-full mt-2"
-          >
-            Sign Out
-          </Button>
         </CardContent>
       </Card>
     </div>

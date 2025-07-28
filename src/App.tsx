@@ -1,16 +1,25 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
-import LoginPage from "./pages/LoginPage";
-import BrowsePage from "./pages/BrowsePage";
+import Login from "./pages/Login";
+import Browse from "./pages/Browse";
+import Header from "./components/Header";
+import Watchlist from "./pages/Watchlist";
+import Watch from "./pages/Watch";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/browse" element={<BrowsePage />} />
-      </Routes>
-    </BrowserRouter>
+    <>
+      <BrowserRouter>
+        <Header />
+        <div className="pt-22"></div>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/browse" element={<Browse />} />
+          <Route path="/watchlist" element={<Watchlist />} />
+          <Route path="/watch" element={<Watch />} />
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

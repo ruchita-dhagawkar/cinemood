@@ -1,14 +1,15 @@
 import MovieCard from "@/components/MovieCard";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 // import { getGenresFromMood } from "@/services/openaiService";
 import { auth } from "@/auth/firebase";
 import { API_OPTIONS, searchMoviesByKeywords } from "@/services/tmdbService";
+import { useMovieStore } from "@/store/movieStore";
 
-export default function BrowsePage() {
+export default function Browse() {
   const navigate = useNavigate();
 
   const [mood, setMood] = useState("");
@@ -17,7 +18,9 @@ export default function BrowsePage() {
   const [popularMovies, setPopularMovies] = useState<any[]>([]);
   const [nowPlayingMovies, setNowPlayingMovies] = useState<any[]>([]);
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
-
+  const setWatchlist = useMovieStore((state) => state.setWatchlist);
+  const watchlist = useMovieStore((state) => state.watchlist);
+  //   TODO: Create a custom hook for fetching movies
   const getNowPlayingMovies = async () => {
     console.log("Fetching now playing movies...");
     try {
@@ -106,23 +109,14 @@ export default function BrowsePage() {
     return () => unsubscribe();
   }, [navigate]);
 
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        navigate("/");
-      })
-      .catch((error) => {
-        console.error("Sign out error:", error);
-      });
+  const addToWatchlist = (movie: any) => {
+    if (watchlist.find((m: any) => m.id === movie.id)) return;
+    setWatchlist([...watchlist, movie]);
+    console.log("Added to watchlist:", [...watchlist, movie]);
   };
 
   return (
     <div className="min-h-screen bg-black text-white p-4">
-      <h1 className="text-3xl font-serif">Welcome to CineMood 🎬</h1>
-      <p className="mt-4">Search by your mood and discover movies!</p>
-      <Button onClick={handleSignOut} className="mt-6">
-        Sign Out
-      </Button>
       <form onSubmit={handleSearch} className="mt-6 flex gap-2">
         <Input
           type="text"
@@ -141,7 +135,16 @@ export default function BrowsePage() {
           <div className="flex gap-4 overflow-x-auto">
             {searchedMovies?.map((movie) => (
               <div key={movie.id} className="flex-shrink-0">
-                <MovieCard movie={movie} />
+                <div>
+                  <MovieCard movie={movie} />
+                  <Button
+                    onClick={() => addToWatchlist(movie)}
+                    size="sm"
+                    className="mt-2 w-full"
+                  >
+                    Add to Watchlist
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -155,7 +158,16 @@ export default function BrowsePage() {
           <div className="flex gap-4 overflow-x-auto">
             {nowPlayingMovies?.map((movie) => (
               <div key={movie.id} className="flex-shrink-0">
-                <MovieCard movie={movie} />
+                <div>
+                  <MovieCard movie={movie} />
+                  <Button
+                    onClick={() => addToWatchlist(movie)}
+                    size="sm"
+                    className="mt-2 w-full"
+                  >
+                    Add to Watchlist
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -164,7 +176,16 @@ export default function BrowsePage() {
           <div className="flex gap-4 overflow-x-auto">
             {popularMovies?.map((movie) => (
               <div key={movie.id} className="flex-shrink-0">
-                <MovieCard movie={movie} />
+                <div>
+                  <MovieCard movie={movie} />
+                  <Button
+                    onClick={() => addToWatchlist(movie)}
+                    size="sm"
+                    className="mt-2 w-full"
+                  >
+                    Add to Watchlist
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
@@ -173,7 +194,16 @@ export default function BrowsePage() {
           <div className="flex gap-4 overflow-x-auto">
             {topRatedMovies?.map((movie) => (
               <div key={movie.id} className="flex-shrink-0">
-                <MovieCard movie={movie} />
+                <div>
+                  <MovieCard movie={movie} />
+                  <Button
+                    onClick={() => addToWatchlist(movie)}
+                    size="sm"
+                    className="mt-2 w-full"
+                  >
+                    Add to Watchlist
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
