@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-// import { getGenresFromMood } from "@/services/openaiService";
+import { getGenresFromMood } from "@/services/openaiService";
 import { auth } from "@/auth/firebase";
 import { API_OPTIONS, searchMoviesByKeywords } from "@/services/tmdbService";
 import { useMovieStore } from "@/store/movieStore";
@@ -20,6 +20,12 @@ export default function Browse() {
   const [topRatedMovies, setTopRatedMovies] = useState<any[]>([]);
   const setWatchlist = useMovieStore((state) => state.setWatchlist);
   const watchlist = useMovieStore((state) => state.watchlist);
+
+  const clearSearch = () => {
+    setMood("");
+    setSearchedMovies([]);
+  };
+
   //   TODO: Create a custom hook for fetching movies
   const getNowPlayingMovies = async () => {
     console.log("Fetching now playing movies...");
@@ -76,17 +82,16 @@ export default function Browse() {
     e.preventDefault();
     setLoading(true);
     try {
-      //   const genres = await getGenresFromMood(mood);
-      const genres = [
-        "Dilwale Dulhania Le Jayenge",
-        "Kabhi Khushi Kabhie Gham",
-        "Kabir Singh",
-      ];
+      const genres = await getGenresFromMood(mood);
+      // const genres = [
+      //   "Dilwale Dulhania Le Jayenge",
+      //   "Kabhi Khushi Kabhie Gham",
+      //   "Kabir Singh",
+      // ];
       console.log("OpenAI returned genres:", genres);
       const results = await searchMoviesByKeywords(genres);
-
+      console.log("TMDB search results:", results);
       setSearchedMovies(results);
-      console.log("Movies:", results);
     } catch (err) {
       console.error(err);
     } finally {
@@ -116,19 +121,37 @@ export default function Browse() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <form onSubmit={handleSearch} className="mt-6 flex gap-2">
-        <Input
-          type="text"
-          placeholder="What are you feeling today?"
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-          className="flex-1 text-white"
-        />
-        <Button type="submit" disabled={loading}>
-          {loading ? "Searching..." : "Go"}
-        </Button>
-      </form>
+    <div className="min-h-screen bg-black text-white pt-16 p-4">
+      <div className="flex justify-center mt-6">
+        <div className="bg-white/10 p-4 rounded-lg shadow-lg w-6/12 border">
+          <form onSubmit={handleSearch} className="flex gap-2 relative">
+            <Input
+              type="text"
+              placeholder="Search movies by describing your mood, e.g., romantic comedy with a twist"
+              value={mood}
+              onChange={(e) => setMood(e.target.value)}
+              className="flex-1 text-black bg-white/90 italic placeholder:italic"
+            />
+            {mood && (
+              <button
+                type="button"
+                onClick={clearSearch}
+                className="absolute right-18 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800 focus:outline-none"
+                aria-label="Clear search input"
+              >
+                &#x2715;
+              </button>
+            )}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold"
+            >
+              {loading ? "Searching..." : "Go"}
+            </Button>
+          </form>
+        </div>
+      </div>
       {searchedMovies.length > 0 && (
         <>
           <h2 className="text-2xl font-semibold mt-6 mb-4">Searched Movies</h2>
@@ -163,7 +186,7 @@ export default function Browse() {
                   <Button
                     onClick={() => addToWatchlist(movie)}
                     size="sm"
-                    className="mt-2 w-full"
+                    className="mt-2 w-full cursor-pointer hover:bg-neutral-800"
                   >
                     Add to Watchlist
                   </Button>
@@ -181,7 +204,7 @@ export default function Browse() {
                   <Button
                     onClick={() => addToWatchlist(movie)}
                     size="sm"
-                    className="mt-2 w-full"
+                    className="mt-2 w-full cursor-pointer hover:bg-neutral-800"
                   >
                     Add to Watchlist
                   </Button>
@@ -199,7 +222,7 @@ export default function Browse() {
                   <Button
                     onClick={() => addToWatchlist(movie)}
                     size="sm"
-                    className="mt-2 w-full"
+                    className="mt-2 w-full cursor-pointer hover:bg-neutral-800"
                   >
                     Add to Watchlist
                   </Button>

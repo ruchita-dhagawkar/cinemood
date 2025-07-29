@@ -1,18 +1,19 @@
 import { signOut } from "firebase/auth";
-import { useInRouterContext, useNavigate } from "react-router-dom";
+import { useInRouterContext, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { auth } from "@/auth/firebase";
 import { useAuthStore } from "@/store/authStore";
 import { useMovieStore } from "@/store/movieStore";
+import { FaBookmark, FaHome } from "react-icons/fa";
 
 const Header = () => {
   const inRouter = useInRouterContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   const watchlist = useMovieStore((state) => state.watchlist);
-  const clearWatchlist = useMovieStore((state) => state.clearWatchlist);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -31,8 +32,10 @@ const Header = () => {
     });
   };
 
+  console.log("Header rendered", isLoggedIn);
+
   return (
-    <div className="w-full fixed top-0 left-0 bg-gradient-to-b from-black/80 to-zinc-900/90 z-10 flex items-center justify-between px-6 py-4">
+    <div className="h-[70px] w-full px-4 flex items-center absolute bg-gradient-to-b from-black to-transparent z-10 justify-between">
       <div className="text-left">
         <h1 className="text-3xl font-serif tracking-wide text-white">
           🎬 CineMood
@@ -41,26 +44,38 @@ const Header = () => {
           Let your mood pick the movie.
         </p>
       </div>
-      {isLoggedIn && (
-        <div className="flex gap-4">
-          <Button
-            onClick={() => {
-              navigate("/watchlist");
-            }}
-            className="bg-zinc-800"
-          >
-            Watchlist
-            <span className="ml-2 text-sm">({watchlist.length})</span>
-          </Button>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              clearWatchlist();
-              console.log("Cleared watchlist");
-            }}
-          >
-            Clear
-          </Button>
+      {isLoggedIn && location.pathname !== "/" && (
+        <div className="flex gap-4 items-center">
+          {(location.pathname === "/watchlist" ||
+            location.pathname.startsWith("/watch")) && (
+            <div
+              className="relative group cursor-pointer"
+              onClick={() => navigate("/browse")}
+            >
+              <FaHome className="text-white text-2xl" />
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                Back to Browse
+              </span>
+            </div>
+          )}
+
+          {location.pathname !== "/watchlist" && (
+            <div
+              className="relative group cursor-pointer"
+              onClick={() => navigate("/watchlist")}
+            >
+              <FaBookmark className="text-white text-2xl" />
+              {watchlist.length > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
+                  {watchlist.length}
+                </span>
+              )}
+              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">
+                Go to Watchlist
+              </span>
+            </div>
+          )}
+
           <Button
             variant="destructive"
             onClick={handleSignOut}

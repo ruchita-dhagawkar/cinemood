@@ -24,6 +24,14 @@ export async function searchMoviesByKeywords(
     const results = data.results || [];
 
     for (const movie of results) {
+      const titleLower = movie.title.toLowerCase();
+      if (
+        titleLower.includes("making of") ||
+        titleLower.includes("behind the scenes") ||
+        titleLower.includes("documentary")
+      ) {
+        continue; // skip unwanted results
+      }
       if (!movieMap.has(movie.id)) {
         movieMap.set(movie.id, movie);
       }

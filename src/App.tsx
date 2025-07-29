@@ -11,12 +11,11 @@ function App() {
     <>
       <BrowserRouter>
         <Header />
-        <div className="pt-22"></div>
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/browse" element={<Browse />} />
           <Route path="/watchlist" element={<Watchlist />} />
-          <Route path="/watch" element={<Watch />} />
+          <Route path="/watch/:movieId" element={<Watch />} />
         </Routes>
       </BrowserRouter>
     </>

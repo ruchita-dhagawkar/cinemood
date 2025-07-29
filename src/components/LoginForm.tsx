@@ -43,44 +43,46 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="relative z-20 min-h-screen flex items-center justify-center bg-gradient-to-b from-black to-zinc-900 text-white px-4">
-      <Card className="w-full max-w-md bg-zinc-950 border-zinc-800 shadow-lg">
+    <div className="w-4/12 max-w-md backdrop-blur-md bg-black/50 shadow-2xl bg-gradient-to-b from-black to-zinc-900 p-4 rounded-lg">
+      <Card className="w-full bg-transparent border-none">
         <CardHeader>
           <CardTitle className="text-center text-3xl font-bold text-white">
-            {isSignup ? "Sign Up" : "Sign In"}
+            {isSignup ? "Create Account" : "Sign In"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label>Email</Label>
+              <Label className="text-zinc-300 text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                className="text-white"
+                className="bg-zinc-900/60 text-white border-zinc-700"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div>
-              <Label>Password</Label>
+              <Label className="text-zinc-300 text-sm font-medium">
+                Password
+              </Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="text-white"
+                className="bg-zinc-900/60 text-white border-zinc-700"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <Button type="submit" className="w-full mt-4">
-              {isSignup ? "Create Account" : "Sign In"}
+            <Button type="submit" className="w-full mt-4 bg-red-600">
+              {isSignup ? "Sign Up" : "Sign In"}
             </Button>
 
-            <p className="text-sm text-center mt-2 text-zinc-400">
+            <p className="text-sm text-center mt-4 text-zinc-400">
               {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
               <span
                 onClick={() => setIsSignup(!isSignup)}

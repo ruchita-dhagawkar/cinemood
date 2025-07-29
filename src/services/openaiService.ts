@@ -6,7 +6,17 @@ const client = new OpenAI({
 });
 
 export async function getGenresFromMood(mood: string): Promise<string[]> {
-  const prompt = `Given this mood: "${mood}", suggest 3 movies or keywords (comma separated). Keep it short.`;
+  const prompt = `
+You are a helpful movie recommendation assistant.
+
+Given the user's mood: "${mood}", suggest exactly 3 movies or relevant keywords/genres that match this mood.  
+- Provide the response as a comma-separated list without extra explanation.  
+- Keep each item short (1-3 words).  
+- Avoid phrases, just titles or keywords.  
+- Examples: "romantic comedy", "thriller", "The Shawshank Redemption".
+
+Return only the list, no additional text.
+`;
 
   const completion = await client.chat.completions.create({
     model: "gpt-4.1-nano",
