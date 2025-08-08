@@ -32,8 +32,6 @@ const Header = () => {
     });
   };
 
-  console.log("Header rendered", isLoggedIn);
-
   return (
     <div className="h-[70px] w-full px-4 flex items-center absolute bg-gradient-to-b from-black to-transparent z-10 justify-between">
       <div className="text-left">

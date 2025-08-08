@@ -42,7 +42,7 @@ const LoginForm = () => {
         .then((userCredential) => {
           console.log("Signed in:", userCredential.user);
           setIsLoggedIn(true);
-          navigate("/browse"); // Redirect to browse page after sign in
+          navigate("/browse");
         })
         .catch((error) => {
           console.error("Sign in error:", error);

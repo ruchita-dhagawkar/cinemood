@@ -7,6 +7,7 @@ import { getGenresFromMood } from "@/services/openaiService";
 import { auth } from "@/auth/firebase";
 import { API_OPTIONS, searchMoviesByKeywords } from "@/services/tmdbService";
 import { MovieSection } from "@/components/MovieSection";
+import { TMDB_MOVIE_CATEGORY_PATH } from "@/utils/constants";
 
 export default function Browse() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function Browse() {
     try {
       setError(null);
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`,
+        TMDB_MOVIE_CATEGORY_PATH(category),
         API_OPTIONS
       );
       if (!response.ok) throw new Error(`Failed to fetch ${category}`);

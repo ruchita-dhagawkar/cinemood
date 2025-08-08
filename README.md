@@ -1,69 +1,103 @@
-# React + TypeScript + Vite
+# CineMood
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🎬 **CineMood** — A mood-based movie recommendation app powered by AI.  
+Discover movies tailored to your current mood, browse, add to your watchlist, and manage your favorites with ease.  
+This experimental project uses AI, specifically the OpenAI API, to personalize movie suggestions and explore emerging technologies.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- User authentication with Firebase
+- Mood-driven movie recommendations using AI APIs
+- Browse movies with rich details and posters fetched from TMDb website
+- Add or remove movies from your personal watchlist
+- Responsive, modern UI built with React and Tailwind CSS
+- State management using Zustand
+- Smooth navigation with React Router
+- Hosted live on Firebase Hosting
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- React + TypeScript
+- Vite (build tool)
+- Firebase Authentication & Hosting
+- Zustand (state management)
+- Tailwind CSS
+- React Router
+- React Icons
+- AI-powered recommendation backend (e.g., OpenAI API)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js (>=14) and npm installed
+- Firebase project setup (for Auth and Hosting)
+- API keys for AI services (if used)
+
+### Installation
+
+```bash
+git clone https://github.com/your-username/cinemood.git
+cd cinemood
+npm install
+
+Setup Environment Variables
+
+Create a .env file in the project root and add:
+
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_OPENAI_API_KEY=your_openai_key
+VITE_TMDB_ACCESS_TOKEN=your_tmdb_token
+
+Run Development Server
+
+npm run dev
+
+Open http://localhost:5173 to view your app.
+
+Build for Production
+
+npm run build
+
+
+⸻
+
+Testing
+
+Run unit tests using Vitest:
+
+npm run test
+
+
+⸻
+
+Deployment
+
+Deployed live on Firebase Hosting:
+
+https://your-firebase-project.web.app
+
+To deploy updates:
+
+npm run build
+firebase deploy --only hosting
+
+
+⸻
+
+Contact
+
+For questions or feedback, reach out at ruchitadhagawkar18@gmail.com
+
+⸻
+
+Enjoy watching movies that match your mood! 🎥✨
+
+---
 ```
