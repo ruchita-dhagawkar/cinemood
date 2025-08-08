@@ -18,6 +18,14 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const setIsLoggedIn = useAuthStore((state) => state.setIsLoggedIn);
 
+  const primaryColorClasses = isSignup
+    ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
+    : "bg-red-600 hover:bg-red-700 focus:ring-red-500";
+
+  const inputFocusRing = isSignup
+    ? "focus:ring-blue-500"
+    : "focus:ring-red-500";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isSignup) {
@@ -46,47 +54,56 @@ const LoginForm = () => {
     <div className="w-4/12 max-w-md backdrop-blur-md bg-black/50 shadow-2xl bg-gradient-to-b from-black to-zinc-900 p-4 rounded-lg">
       <Card className="w-full bg-transparent border-none">
         <CardHeader>
-          <CardTitle className="text-center text-3xl font-bold text-white">
+          <CardTitle className="text-center text-4xl font-extrabold text-white">
             {isSignup ? "Create Account" : "Sign In"}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-8">
             <div>
-              <Label className="text-zinc-300 text-sm font-medium">Email</Label>
+              <Label className="text-zinc-300 text-base font-semibold mb-2 block">
+                Email
+              </Label>
               <Input
                 id="email"
                 type="email"
                 placeholder="you@example.com"
-                className="bg-zinc-900/60 text-white border-zinc-700"
+                className={`bg-zinc-900/70 text-white outline-none rounded-md px-4 py-3 placeholder-opacity-60 focus:outline-none focus:ring-2 ${inputFocusRing} shadow-sm`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
             <div>
-              <Label className="text-zinc-300 text-sm font-medium">
+              <Label className="text-zinc-300 text-base font-semibold mb-2 block">
                 Password
               </Label>
               <Input
                 id="password"
                 type="password"
                 placeholder="••••••••"
-                className="bg-zinc-900/60 text-white border-zinc-700"
+                className={`bg-zinc-900/70 text-white outline-none rounded-md px-4 py-3 placeholder-opacity-60 focus:outline-none focus:ring-2 ${inputFocusRing} shadow-sm`}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <Button type="submit" className="w-full mt-4 bg-red-600">
+            <Button
+              type="submit"
+              className={`w-full mt-4 text-white font-semibold py-3 rounded-md shadow-md transition-colors duration-300 ${primaryColorClasses}`}
+            >
               {isSignup ? "Sign Up" : "Sign In"}
             </Button>
 
-            <p className="text-sm text-center mt-4 text-zinc-400">
+            <p className="text-sm text-center mt-6 text-zinc-400">
               {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
               <span
                 onClick={() => setIsSignup(!isSignup)}
-                className="text-blue-400 hover:underline cursor-pointer"
+                className={`font-bold transition-colors duration-200 cursor-pointer ${
+                  isSignup
+                    ? "text-blue-400 hover:text-blue-300"
+                    : "text-red-400 hover:text-red-300"
+                }`}
               >
                 {isSignup ? "Sign In" : "Sign Up"}
               </span>

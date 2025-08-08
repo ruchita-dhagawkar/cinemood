@@ -1,14 +1,8 @@
 import MovieCard from "@/components/MovieCard";
-import { Button } from "@/components/ui/button";
 import { useMovieStore } from "@/store/movieStore";
 
 const Watchlist = () => {
   const watchlist = useMovieStore((state) => state.watchlist);
-  const setWatchlist = useMovieStore((state) => state.setWatchlist);
-
-  const removeFromWatchlist = (movie: any) => {
-    setWatchlist(watchlist.filter((m) => m.id !== movie.id));
-  };
 
   return (
     <div className="min-h-screen bg-black text-white p-4 pt-16">
@@ -18,13 +12,6 @@ const Watchlist = () => {
           <div key={movie.id} className="flex-shrink-0">
             <div>
               <MovieCard movie={movie} />
-              <Button
-                onClick={() => removeFromWatchlist(movie)}
-                size="sm"
-                className="mt-2 w-full"
-              >
-                Remove from Watchlist
-              </Button>
             </div>
           </div>
         ))}
